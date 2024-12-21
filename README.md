@@ -1,10 +1,11 @@
 # THU-Annual-Eat
 
-一年过去了，你在华子食堂里花的钱都花在哪儿了？
+一年过去了，你在白鲸食堂里花的钱都花在哪儿了？
 
 ## 项目简介
 
-本项目是一个用于统计华清大学学生在食堂（和宿舍）的消费情况的脚本。通过模拟登录华清大学校园卡网站，获取学生在华子食堂的消费记录，并通过数据可视化的方式展示。
+本项目是一个用于统计白鲸大学学生在食堂（和宿舍）的消费情况的脚本。通过模拟登录大学校园卡网站，获取学生在白鲸食堂的消费记录，并通过数据可视化的方式展示。
+本项目fork自[THU-Annual-Eat](https://github.com/leverimmy/THU-Annual-Eat)，感谢原作者的贡献。
 
 ![demo](./demo.png)
 
@@ -12,15 +13,17 @@
 
 ### 0. 获取服务代码
 
-首先，登录校园卡账号后，在[华清大学校园卡网站](https://card.tsinghua.edu.cn/userselftrade)获取你的服务代码。
+首先，登录校园卡账号后，在[白鲸大学校园卡网站](https://card.pku.edu.cn/user/user)获取你的`account`和`hallticket`。
 
 ![card](./card.png)
 
-`F12` 打开开发者工具，切换到 Network（网络）标签页，然后 `Ctrl + R` 刷新页面，找到 `userselftrade` 这个请求，查看标头中的 `Cookie` 字段，其中包含了你的服务代码。
+`F12` 打开开发者工具，切换到 Network标签页，然后点击网页左侧的`流水信息`，找到 `GetPersonTrjn` 这个请求，进入`Payload`选项卡，复制其中`account`字段**之后**（不含 `account`）的值，后面会用到。
 
-服务代码是 `servicehall=` **之后**的一串字符（不含 `servicehall=`），复制下来，后面会用到。
+![account](./account.png)
 
-![servicehall](./servicehall.png)
+再进入`Cookies`选项卡，找到`hallticket`一行，复制其`value`，后面会用到。
+
+![hallticket](./hallticket.png)
 
 ### 1. 安装依赖
 
@@ -38,16 +41,16 @@ pip install requests matplotlib pycryptodome
 python main.py
 ```
 
-首次运行时，请输入你的学号和“服务代码”，会自动保存在 `config.json` 文件中。
+首次运行时，请输入你的`account`和`hallticket`，会自动保存在 `config.json` 文件中。
 
 ### 3.（可选）修改配置
 
-如果你想修改学号或者服务代码，可以直接修改 `config.json` 文件。
+如果你想修改`account`或者`hallticket`，可以直接修改 `config.json` 文件。
 
 ```json
 {
-    "idserial": "你的学号",
-    "servicehall": "你的服务代码"
+    "account": "你的account",
+    "hallticket": "你的hallticket"
 }
 ```
 

@@ -6,59 +6,53 @@ import matplotlib.pyplot as plt
 import requests
 import platform
 
-def decrypt_aes_ecb(encrypted_data: str) -> str:
-    
-    key = encrypted_data[:16].encode('utf-8')
-    encrypted_data = encrypted_data[16:]
-    encrypted_data_bytes = base64.b64decode(encrypted_data)
-    
-    cipher = AES.new(key, AES.MODE_ECB)
-    
-    decrypted_data = unpad(cipher.decrypt(encrypted_data_bytes), AES.block_size)
-
-    return decrypted_data.decode('utf-8')
-
-idserial = ""
-servicehall = ""
+account = ""
+hallticket = ""
 all_data = dict()
 
 if __name__ == "__main__":
     # 读入账户信息
     try:
         with open("config.json", "r", encoding='utf-8') as f:
-            account = json.load(f)
-            idserial = account["idserial"]
-            servicehall = account["servicehall"]
+            config = json.load(f)
+            account = config["account"]
+            hallticket = config["hallticket"]
     except Exception as e:
         print("账户信息读取失败，请重新输入")
-        idserial = input("请输入学号: ")
-        servicehall = input("请输入服务代码: ")
+        account = input("请输入account: ")
+        hallticket = input("请输入hallticket: ")
         with open("config.json", "w", encoding='utf-8') as f:
-            json.dump({"idserial": idserial, "servicehall": servicehall}, f, indent=4)
+            json.dump({"account": account, "hallticket": hallticket}, f, indent=4)
     
     # 发送请求，得到加密后的字符串
-    url = f"https://card.tsinghua.edu.cn/business/querySelfTradeList?pageNumber=0&pageSize=5000&starttime=2024-01-01&endtime=2024-12-31&idserial={idserial}&tradetype=-1"
+    url = f"https://card.pku.edu.cn/Report/GetPersonTrjn"
     cookie = {
-        "servicehall": servicehall,
+        "hallticket": hallticket,
     }
-    response = requests.post(url, cookies=cookie)
+    post_data = {
+        "sdate": "2024-01-01",
+        "edate": "2024-12-31",
+        "account": account,
+        "page": "1",
+        "rows": "5000",
+    }
+    response = requests.post(url, cookies=cookie, data=post_data)
 
-    # 解密字符串
-    encrypted_string = json.loads(response.text)["data"]
-    decrypted_string = decrypt_aes_ecb(encrypted_string)
+    data = json.loads(response.text)["rows"]
 
     # 整理数据
-    data = json.loads(decrypted_string)
-    for item in data["resultData"]["rows"]:
+    for item in data:
         try:
-            if item["mername"] in all_data:
-                all_data[item["mername"]] += item["txamt"]
-            else:
-                all_data[item["mername"]] = item["txamt"]
+            if(item["TRANAMT"] < 0):
+                if item["MERCNAME"].strip() in all_data:
+                    all_data[item["MERCNAME"].strip()] += abs(item["TRANAMT"])
+                else: 
+                    all_data[item["MERCNAME"].strip()] = abs(item["TRANAMT"])
         except Exception as e:
             pass
-    all_data = {k: round(v / 100, 2) for k, v in all_data.items()} # 将分转换为元，并保留两位小数
-    print(len(all_data))
+    all_data = {k: round(v, 2) for k, v in all_data.items()}
+    summary = f"统计总种类数：{len(all_data)}\n总消费次数：{len(data)}\n总消费金额：{sum(all_data.values())}"
+    print(summary)
     # 输出结果
     all_data = dict(sorted(all_data.items(), key=lambda x: x[1], reverse=False))
     if platform.system() == "Darwin":
@@ -78,7 +72,8 @@ if __name__ == "__main__":
         
     # plt.tight_layout()
     plt.xlim(0, 1.2 * max(all_data.values()))
-    plt.title("华清大学食堂消费情况")
+    plt.title("白鲸大学食堂消费情况")
     plt.xlabel("消费金额（元）")
+    plt.text(0.8, 0.1, summary, ha='center', va='center', transform=plt.gca().transAxes)
     plt.savefig("result.png")
     plt.show()
