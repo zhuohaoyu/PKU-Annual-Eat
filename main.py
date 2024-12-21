@@ -28,18 +28,14 @@ if __name__ == "__main__":
     try:
         with open("config.json", "r", encoding='utf-8') as f:
             account = json.load(f)
-            username = account["username"]
-            password = account["password"]
             idserial = account["idserial"]
             servicehall = account["servicehall"]
     except Exception as e:
         print("账户信息读取失败，请重新输入")
-        username = input("请输入用户名: ")
-        password = input("请输入密码: ")
         idserial = input("请输入学号: ")
         servicehall = input("请输入服务代码: ")
         with open("config.json", "w", encoding='utf-8') as f:
-            json.dump({"username": username, "password": password, "idserial": idserial, "servicehall": servicehall}, f, indent=4)
+            json.dump({"idserial": idserial, "servicehall": servicehall}, f, indent=4)
     
     # 发送请求，得到加密后的字符串
     url = f"https://card.tsinghua.edu.cn/business/querySelfTradeList?pageNumber=0&pageSize=5000&starttime=2024-01-01&endtime=2024-12-31&idserial={idserial}&tradetype=-1"

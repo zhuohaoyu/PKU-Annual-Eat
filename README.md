@@ -18,7 +18,7 @@
 
 `F12` 打开开发者工具，切换到 Network（网络）标签页，然后 `Ctrl + R` 刷新页面，找到 `userselftrade` 这个请求，查看标头中的 `Cookie` 字段，其中包含了你的服务代码。
 
-服务代码就是 `servicehall=` 后面的一串字符，复制下来，后面会用到。
+服务代码是 `servicehall=` **之后**的一串字符（不含 `servicehall=`），复制下来，后面会用到。
 
 ![servicehall](./servicehall.png)
 
@@ -46,8 +46,6 @@ python main.py
 
 ```json
 {
-    "username": "你的账号",
-    "password": "你的密码",
     "idserial": "你的学号",
     "servicehall": "你的服务代码"
 }
