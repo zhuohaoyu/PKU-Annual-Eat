@@ -1,4 +1,4 @@
-# THU-Annual-Eat
+# PKU-Annual-Eat
 
 一年过去了，你在白鲸食堂里花的钱都花在哪儿了？
 
