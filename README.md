@@ -4,7 +4,10 @@
 
 ## 项目简介
 
+> 项目的 idea 来源于 [Rose-max111](https://github.com/Rose-max111)。
+
 本项目是一个用于统计白鲸大学学生在食堂（和宿舍）的消费情况的脚本。通过模拟登录大学校园卡网站，获取学生在白鲸食堂的消费记录，并通过数据可视化的方式展示。
+
 本项目fork自[THU-Annual-Eat](https://github.com/leverimmy/THU-Annual-Eat)，感谢原作者的贡献。
 
 ![demo](./demo.png)
