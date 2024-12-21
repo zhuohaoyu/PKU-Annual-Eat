@@ -4,6 +4,7 @@ import base64
 import json
 import matplotlib.pyplot as plt
 import requests
+import platform
 
 def decrypt_aes_ecb(encrypted_data: str) -> str:
     
@@ -60,7 +61,10 @@ if __name__ == "__main__":
     print(len(all_data))
     # 输出结果
     all_data = dict(sorted(all_data.items(), key=lambda x: x[1], reverse=False))
-    plt.rcParams['font.sans-serif'] = ['SimHei']
+    if platform.system() == "Darwin":
+        plt.rcParams['font.sans-serif'] = ['Arial Unicode MS']
+    else:
+        plt.rcParams['font.sans-serif'] = ['SimHei']
     plt.figure(figsize=(12, len(all_data) / 66 * 18))
     plt.barh(list(all_data.keys()), list(all_data.values()))
     for index, value in enumerate(list(all_data.values())):
