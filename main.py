@@ -38,7 +38,7 @@ if __name__ == "__main__":
         password = input("请输入密码: ")
         idserial = input("请输入学号: ")
         servicehall = input("请输入服务代码: ")
-        with open("account.json", "w", encoding='utf-8') as f:
+        with open("config.json", "w", encoding='utf-8') as f:
             json.dump({"username": username, "password": password, "idserial": idserial, "servicehall": servicehall}, f, indent=4)
     
     # 发送请求，得到加密后的字符串
