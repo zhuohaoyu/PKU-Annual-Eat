@@ -63,8 +63,11 @@ if __name__ == "__main__":
     all_data = dict(sorted(all_data.items(), key=lambda x: x[1], reverse=False))
     if platform.system() == "Darwin":
         plt.rcParams['font.sans-serif'] = ['Arial Unicode MS']
+    elif platform.system() == "Linux":
+        plt.rcParams['font.family'] = ['Droid Sans Fallback', 'DejaVu Sans']
     else:
         plt.rcParams['font.sans-serif'] = ['SimHei']
+        
     plt.figure(figsize=(12, len(all_data) / 66 * 18))
     plt.barh(list(all_data.keys()), list(all_data.values()))
     for index, value in enumerate(list(all_data.values())):
