@@ -17,8 +17,6 @@ def decrypt_aes_ecb(encrypted_data: str) -> str:
 
     return decrypted_data.decode('utf-8')
 
-username = ""
-password = ""
 idserial = ""
 servicehall = ""
 all_data = dict()
