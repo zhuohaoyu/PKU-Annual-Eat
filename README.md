@@ -4,7 +4,7 @@
 
 ## 项目简介
 
-> 项目 idea 来源于 [Rose-max111](https://github.com/Rose-max111)。
+> 项目的 idea 来源于 [Rose-max111](https://github.com/Rose-max111)。
 
 本项目是一个用于统计华清大学学生在食堂（和宿舍）的消费情况的脚本。通过模拟登录华清大学校园卡网站，获取学生在华子食堂的消费记录，并通过数据可视化的方式展示。
 
