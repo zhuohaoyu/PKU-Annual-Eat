@@ -6,7 +6,7 @@
 
 > 项目的 idea 来源于 [Rose-max111](https://github.com/Rose-max111)。
 
-本项目是一个用于统计白鲸大学学生在食堂（和宿舍）的消费情况的脚本。通过模拟登录大学校园卡网站，获取学生在白鲸食堂的消费记录，并通过数据可视化的方式展示。
+本项目是一个用于统计白鲸大学学生校园卡消费情况的脚本。通过模拟登录大学校园卡网站，获取学生的校园卡消费记录，并通过数据可视化的方式展示。
 
 本项目fork自[THU-Annual-Eat](https://github.com/leverimmy/THU-Annual-Eat)，感谢原作者的贡献。
 
@@ -14,17 +14,17 @@
 
 ## 使用方法
 
-### 0. 获取服务代码
+### 0. 获取account和hallticket
 
-首先，登录校园卡账号后，在[白鲸大学校园卡网站](https://card.pku.edu.cn/user/user)获取你的`account`和`hallticket`。
+首先，登录校园卡账号后，在[白鲸大学校园卡网站](https://card.pku.edu.cn/user/user)获取你的`account`和`hallticket`。方法如下：
 
 ![card](./card.png)
 
-`F12` 打开开发者工具，切换到 Network标签页，然后点击网页左侧的`流水信息`，找到 `GetPersonTrjn` 这个请求，进入`Payload`选项卡，复制其中`account`字段**之后**（不含 `account`）的值，后面会用到。
+点击`账号管理`，在弹出的页面中找到`账号`，复制其值。
 
 ![account](./account.png)
 
-再进入`Cookies`选项卡，找到`hallticket`一行，复制其`value`，后面会用到。
+`F12` 打开开发者工具，切换到`Network`标签页，然后`Ctrl+R`刷新页面，找到 `GetCardInfoByAccountNoParm` 这个请求，进入`Cookies`选项卡，复制其中`hallticket`字段的**value**，后面会用到。
 
 ![hallticket](./hallticket.png)
 
