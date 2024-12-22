@@ -1,6 +1,3 @@
-from Crypto.Cipher import AES
-from Crypto.Util.Padding import unpad
-import base64
 import json
 import matplotlib.pyplot as plt
 import requests
@@ -30,11 +27,11 @@ if __name__ == "__main__":
         "hallticket": hallticket,
     }
     post_data = {
-        "sdate": "2024-01-01",
+        "sdate": "2020-01-01",
         "edate": "2024-12-31",
         "account": account,
         "page": "1",
-        "rows": "5000",
+        "rows": "9000",
     }
     response = requests.post(url, cookies=cookie, data=post_data)
 
@@ -51,10 +48,19 @@ if __name__ == "__main__":
         except Exception as e:
             pass
     all_data = {k: round(v, 2) for k, v in all_data.items()}
-    summary = f"统计总种类数：{len(all_data)}\n总消费次数：{len(data)}\n总消费金额：{sum(all_data.values())}"
+    summary = f"统计总种类数：{len(all_data)}\n总消费次数：{len(data)}\n总消费金额：{round(sum(all_data.values()), 1)}"
     print(summary)
     # 输出结果
     all_data = dict(sorted(all_data.items(), key=lambda x: x[1], reverse=False))
+    if len(all_data) > 50:
+        # Get top 10 and bottom 10
+        top_10 = dict(list(all_data.items())[:20])
+        bottom_10 = dict(list(all_data.items())[-20:])
+        # Add a separator between top and bottom groups
+        middle_values = list(all_data.values())[20:-20]
+        separator = {"中间省略": sum(middle_values)}  # Sum of middle values
+        all_data = {**top_10, **separator, **bottom_10}
+    
     if platform.system() == "Darwin":
         plt.rcParams['font.sans-serif'] = ['Arial Unicode MS']
     elif platform.system() == "Linux":
@@ -72,7 +78,7 @@ if __name__ == "__main__":
         
     # plt.tight_layout()
     plt.xlim(0, 1.2 * max(all_data.values()))
-    plt.title("白鲸大学食堂消费情况")
+    plt.title(f"白鲸大学食堂消费情况\n({post_data['sdate']} 至 {post_data['edate']})")
     plt.xlabel("消费金额（元）")
     plt.text(0.8, 0.1, summary, ha='center', va='center', transform=plt.gca().transAxes)
     plt.savefig("result.png")
