@@ -30,11 +30,11 @@ if __name__ == "__main__":
         "hallticket": hallticket,
     }
     post_data = {
-        "sdate": "2024-01-01",
+        "sdate": "2020-01-01",
         "edate": "2024-12-31",
         "account": account,
         "page": "1",
-        "rows": "5000",
+        "rows": "9000",
     }
     response = requests.post(url, cookies=cookie, data=post_data)
 
