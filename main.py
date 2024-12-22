@@ -1,6 +1,3 @@
-from Crypto.Cipher import AES
-from Crypto.Util.Padding import unpad
-import base64
 import json
 import matplotlib.pyplot as plt
 import requests
