@@ -2,6 +2,7 @@ import json
 import matplotlib.pyplot as plt
 import requests
 import platform
+from datetime import datetime
 
 account = ""
 hallticket = ""
@@ -20,15 +21,48 @@ if __name__ == "__main__":
         hallticket = input("请输入hallticket: ")
         with open("config.json", "w", encoding='utf-8') as f:
             json.dump({"account": account, "hallticket": hallticket}, f, indent=4)
-    
+
+    # 默认日期
+    default_sdate = "2024-01-01"
+    default_edate = "2024-12-31"
+
+    def is_valid_date(date_str):
+        """检查日期是否符合YYYY-MM-DD格式且为有效日期"""
+        try:
+            datetime.strptime(date_str, "%Y-%m-%d")
+            return True
+        except ValueError:
+            return False
+    def format_date(date_str):
+        """确保日期始终以两位数显示月份和日期"""
+        date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+        return date_obj.strftime("%Y-%m-%d")  # 格式化为YYYY-MM-DD
+
+    # 获取用户输入的开始日期
+    sdate = input("请输入开始日期(YYYY-MM-DD，默认2024-01-01): ").strip()
+    if not is_valid_date(sdate):
+        print(f"输入的开始日期无效，使用默认值: {default_sdate}")
+        sdate = default_sdate
+    else:
+        sdate = format_date(sdate)
+
+    # 获取用户输入的结束日期
+    edate = input("请输入结束日期(YYYY-MM-DD，默认2024-12-31): ").strip()
+    if not is_valid_date(edate):
+        print(f"输入的结束日期无效，使用默认值: {default_edate}")
+        edate = default_edate
+    else:
+        edate = format_date(edate)
+
+    print(f"开始日期: {sdate}, 结束日期: {edate}")
     # 发送请求，得到加密后的字符串
     url = f"https://card.pku.edu.cn/Report/GetPersonTrjn"
     cookie = {
         "hallticket": hallticket,
     }
     post_data = {
-        "sdate": "2020-01-01",
-        "edate": "2024-12-31",
+        "sdate": sdate,
+        "edate": edate,
         "account": account,
         "page": "1",
         "rows": "9000",
