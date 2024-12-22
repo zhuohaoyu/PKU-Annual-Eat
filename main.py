@@ -51,10 +51,19 @@ if __name__ == "__main__":
         except Exception as e:
             pass
     all_data = {k: round(v, 2) for k, v in all_data.items()}
-    summary = f"统计总种类数：{len(all_data)}\n总消费次数：{len(data)}\n总消费金额：{sum(all_data.values())}"
+    summary = f"统计总种类数：{len(all_data)}\n总消费次数：{len(data)}\n总消费金额：{round(sum(all_data.values()), 1)}"
     print(summary)
     # 输出结果
     all_data = dict(sorted(all_data.items(), key=lambda x: x[1], reverse=False))
+    if len(all_data) > 50:
+        # Get top 10 and bottom 10
+        top_10 = dict(list(all_data.items())[:20])
+        bottom_10 = dict(list(all_data.items())[-20:])
+        # Add a separator between top and bottom groups
+        middle_values = list(all_data.values())[20:-20]
+        separator = {"中间省略": sum(middle_values)}  # Sum of middle values
+        all_data = {**top_10, **separator, **bottom_10}
+    
     if platform.system() == "Darwin":
         plt.rcParams['font.sans-serif'] = ['Arial Unicode MS']
     elif platform.system() == "Linux":
