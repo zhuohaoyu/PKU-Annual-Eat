@@ -92,7 +92,7 @@ if __name__ == "__main__":
         bottom_10 = dict(list(all_data.items())[-20:])
         # Add a separator between top and bottom groups
         middle_values = list(all_data.values())[20:-20]
-        separator = {"中间省略": sum(middle_values)}  # Sum of middle values
+        separator = {"中间省略": round(sum(middle_values), 2)}  # Sum of middle values
         all_data = {**top_10, **separator, **bottom_10}
     
     if platform.system() == "Darwin":
