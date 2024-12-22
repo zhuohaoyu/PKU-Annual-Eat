@@ -105,13 +105,13 @@ if __name__ == "__main__":
     plt.figure(figsize=(12, len(all_data) / 66 * 18))
     plt.barh(list(all_data.keys()), list(all_data.values()))
     for index, value in enumerate(list(all_data.values())):
-        plt.text(value + 0.01 * max(all_data.values()),
+        plt.text(value + 0.01 * max(all_data.values() or [0]),
                 index,
                 str(value),
                 va='center')
         
     # plt.tight_layout()
-    plt.xlim(0, 1.2 * max(all_data.values()))
+    plt.xlim(0, 1.2 * max(all_data.values() or [0]))
     plt.title(f"白鲸大学食堂消费情况\n({post_data['sdate']} 至 {post_data['edate']})")
     plt.xlabel("消费金额（元）")
     plt.text(0.8, 0.1, summary, ha='center', va='center', transform=plt.gca().transAxes)
