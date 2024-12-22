@@ -72,7 +72,7 @@ if __name__ == "__main__":
         
     # plt.tight_layout()
     plt.xlim(0, 1.2 * max(all_data.values()))
-    plt.title("白鲸大学食堂消费情况")
+    plt.title(f"白鲸大学食堂消费情况\n({post_data['sdate']} 至 {post_data['edate']})")
     plt.xlabel("消费金额（元）")
     plt.text(0.8, 0.1, summary, ha='center', va='center', transform=plt.gca().transAxes)
     plt.savefig("result.png")
