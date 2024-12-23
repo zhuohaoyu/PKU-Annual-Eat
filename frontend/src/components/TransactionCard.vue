@@ -1,12 +1,18 @@
 <template>
-  <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-    <div>
-      <div class="font-medium">{{ transaction.MERCNAME.trim() }}</div>
-      <div class="text-sm text-gray-500">{{ formatDate(transaction.OCCTIME) }}</div>
-      <div class="text-xs text-gray-400 mt-1">{{ story }}</div>
+  <div class="flex justify-between items-center p-4 bg-white border border-gray-100 
+              rounded-lg hover:border-gray-200 transition-colors">
+    <div class="min-w-0">
+      <div class="font-medium text-gray-900 truncate">{{ transaction.MERCNAME.trim() }}</div>
+      <div class="text-sm text-gray-500 mt-0.5">{{ formatDate(transaction.OCCTIME) }}</div>
+      <div class="text-xs text-gray-400 mt-1.5 line-clamp-2">{{ story }}</div>
     </div>
-    <div class="text-lg font-semibold text-gray-900">
-      ¥{{ Math.abs(parseFloat(transaction.TRANAMT)).toFixed(2) }}
+    <div class="flex flex-col items-end ml-4">
+      <div class="text-lg font-semibold text-gray-900">
+        ¥{{ Math.abs(parseFloat(transaction.TRANAMT)).toFixed(2) }}
+      </div>
+      <div class="text-xs text-gray-500 mt-1">
+        {{ getTimeOfDay(transaction.OCCTIME) }}
+      </div>
     </div>
   </div>
 </template>
@@ -32,5 +38,17 @@ const formatDate = (dateStr) => {
     hour: '2-digit',
     minute: '2-digit'
   })
+}
+
+const getTimeOfDay = (dateStr) => {
+  const date = new Date(dateStr)
+  const hours = date.getHours()
+  if (hours < 12) {
+    return '上午'
+  } else if (hours < 18) {
+    return '下午'
+  } else {
+    return '晚上'
+  }
 }
 </script> 
