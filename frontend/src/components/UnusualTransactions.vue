@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-5">
     <!-- Early Birds -->
-    <div v-if="earlyBirds.length > 0" 
+    <div v-if="earlyBirds.length > 0 && earliestTransaction" 
          class="bg-gradient-to-br from-white to-amber-50/30 rounded-2xl p-6 border border-amber-100/50">
       <div class="flex items-center gap-4 mb-4">
         <div class="p-3 bg-amber-100/50 rounded-xl">
@@ -114,18 +114,94 @@ const props = defineProps({
   }
 })
 
-// Computed properties for transaction analysis
-const earlyBirds = computed(() => props.specialTransactions?.early_birds || [])
-const nightOwls = computed(() => props.specialTransactions?.night_owls || [])
-const bigSpenders = computed(() => props.specialTransactions?.big_spenders || [])
+// Add a filter function
+const filterTransaction = (trans) => {
+  if (!trans) return false
+  // Filter out water control records
+  if (trans.MERCNAME.includes('医学部学生区水控')) {
+    return false
+  }
+  return true
+}
 
-const earliestTransaction = computed(() => 
-  earlyBirds.value.sort((a, b) => new Date(a.OCCTIME) - new Date(b.OCCTIME))[0]
-)
+// First get all valid transactions, then find earliest/latest
+const validTransactions = computed(() => {
+  return props.transactions.filter(filterTransaction)
+})
 
-const latestTransaction = computed(() => 
-  nightOwls.value.sort((a, b) => new Date(b.OCCTIME) - new Date(a.OCCTIME))[0]
-)
+// Update the computed properties
+const earlyBirds = computed(() => {
+  // Get all valid transactions and sort by time of day
+  return validTransactions.value
+    .filter(trans => trans.TRANAMT < 0)  // Only consumption records
+    .sort((a, b) => {
+      // Extract hours and minutes for comparison
+      const timeA = new Date(a.OCCTIME)
+      const timeB = new Date(b.OCCTIME)
+      // Convert to minutes since midnight for easy comparison
+      const minutesA = timeA.getHours() * 60 + timeA.getMinutes()
+      const minutesB = timeB.getHours() * 60 + timeB.getMinutes()
+      return minutesA - minutesB  // Sort by time of day
+    })
+    .slice(0, 3)  // Take top 3 earliest by time of day
+})
+
+// Update earliest transaction computation
+const earliestTransaction = computed(() => {
+  if (!validTransactions.value || validTransactions.value.length === 0) return null
+  
+  // Find the transaction with earliest time of day
+  return validTransactions.value
+    .filter(trans => trans.TRANAMT < 0)
+    .reduce((earliest, current) => {
+      const earliestTime = new Date(earliest.OCCTIME)
+      const currentTime = new Date(current.OCCTIME)
+      const earliestMinutes = earliestTime.getHours() * 60 + earliestTime.getMinutes()
+      const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes()
+      
+      return currentMinutes < earliestMinutes ? current : earliest
+    })
+})
+
+// Update the night owls computation
+const nightOwls = computed(() => {
+  // Get all valid transactions and sort by time of day (descending)
+  return validTransactions.value
+    .filter(trans => trans.TRANAMT < 0)  // Only consumption records
+    .sort((a, b) => {
+      // Extract hours and minutes for comparison
+      const timeA = new Date(a.OCCTIME)
+      const timeB = new Date(b.OCCTIME)
+      // Convert to minutes since midnight for easy comparison
+      const minutesA = timeA.getHours() * 60 + timeA.getMinutes()
+      const minutesB = timeB.getHours() * 60 + timeB.getMinutes()
+      return minutesB - minutesA  // Sort by time of day descending
+    })
+    .slice(0, 3)  // Take top 3 latest by time of day
+})
+
+// Update latest transaction computation
+const latestTransaction = computed(() => {
+  if (!validTransactions.value || validTransactions.value.length === 0) return null
+  
+  // Find the transaction with latest time of day
+  return validTransactions.value
+    .filter(trans => trans.TRANAMT < 0)
+    .reduce((latest, current) => {
+      const latestTime = new Date(latest.OCCTIME)
+      const currentTime = new Date(current.OCCTIME)
+      const latestMinutes = latestTime.getHours() * 60 + latestTime.getMinutes()
+      const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes()
+      
+      return currentMinutes > latestMinutes ? current : latest
+    })
+})
+
+// Get big spenders (keep original logic but with filter)
+const bigSpenders = computed(() => {
+  const spenders = props.specialTransactions?.big_spenders || []
+  return spenders.filter(filterTransaction)
+})
 
 // Helper functions for time formatting
 const formatTime = (dateStr) => {
@@ -142,9 +218,9 @@ const formatTime = (dateStr) => {
 const getEarlyBirdStory = (trans) => {
   const hour = new Date(trans.OCCTIME).getHours()
   const stories = [
-    `清晨${hour}点，校园还在沉睡，你已经开启了新的一天`,
-    `这一天的第一笔消费，是给自己的能量补给`,
-    `早起的鸟儿有虫吃，早起的你选择了这里补充能量`
+    `这天${hour}点，你开启了新的一天`,
+    `这是一天的第一笔消费`,
+    `一天从这里开始`
   ]
   return stories[Math.floor(Math.random() * stories.length)]
 }
