@@ -20,8 +20,12 @@ const props = defineProps({
 const chartContainer = ref(null)
 let chart = null
 
-// Updated modern color palette
-const LOCATION_GROUPS = ['燕南', '家园', '农园', '新勺园', '成府园', '医学部', '松林', '佟园', '学一', '学五', '德园']
+// Updated location groups and colors
+const LOCATION_GROUPS = [
+  '燕南', '家园', '农园', '新勺园', '成府园', '医学部', '松林', 
+  '佟园', '学一', '学五', '德园', '跃二', '馨园', '快乐食间'
+]
+
 const GROUP_COLORS = {
   '燕南': '#60a5fa',    // Dimmed blue
   '家园': '#4ade80',    // Dimmed green
@@ -34,6 +38,9 @@ const GROUP_COLORS = {
   '学一': '#14b8a6',    // Dimmed teal
   '学五': '#22c55e',    // Dimmed emerald
   '德园': '#ef4444',    // Dimmed red
+  '跃二': '#0ea5e9',    // Dimmed sky blue
+  '馨园': '#d946ef',    // Dimmed pink-purple
+  '快乐食间': '#06b6d4', // Dimmed cyan
   '其他': '#94a3b8'     // Dimmed gray
 }
 
@@ -47,7 +54,7 @@ const processData = (transactions) => {
     let group = '其他'
     
     for (const prefix of LOCATION_GROUPS) {
-      if (location.startsWith(prefix)) {
+      if (location.includes(prefix)) {
         group = prefix
         break
       }
@@ -200,7 +207,7 @@ const createBarVisualization = () => {
         const data = params[0]
         const stats = sortedData[params.dataIndex]
         return `${data.name}<br/>
-                ���费 <span class="font-medium">¥${data.value.toFixed(1)}</span><br/>
+                消费 <span class="font-medium">¥${data.value.toFixed(1)}</span><br/>
                 共计 <span class="font-medium">${stats.visits}次</span>`
       }
     },
