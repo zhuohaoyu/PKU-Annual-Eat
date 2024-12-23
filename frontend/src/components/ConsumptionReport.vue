@@ -141,11 +141,23 @@
               </h3>
               <p class="text-sm text-gray-500 mt-1">{{ getLocationText() }}</p>
             </div>
+            <!-- Add toggle button -->
+            <button 
+              @click="toggleChartType"
+              class="px-3 py-1.5 text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 
+                     rounded-lg border border-gray-200 transition-colors flex items-center gap-1.5"
+            >
+              <span>{{ isBarChart ? '切换饼图' : '切换条形图' }}</span>
+              <span class="text-gray-400">📊</span>
+            </button>
           </div>
         </div>
         <div class="p-4">
           <div class="h-[600px]">
-            <LocationAnalysis :transactions="reportData.transactions" />
+            <LocationAnalysis 
+              :transactions="reportData.transactions" 
+              :chart-type="isBarChart ? 'bar' : 'sunburst'"
+            />
           </div>
         </div>
       </div>
@@ -193,7 +205,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import EatingTimeHeatmap from './EatingTimeHeatmap.vue'
 import LocationAnalysis from './LocationAnalysis.vue'
 import UnusualTransactions from './UnusualTransactions.vue'
@@ -246,7 +258,7 @@ const getExplorerText = () => {
   if (count >= 20) return "探索达人 🏆"
   if (count >= 15) return "美食家 🌟"
   if (count >= 10) return "初级探索者 🎯"
-  return "��续探索"
+  return "继续探索"
 }
 
 const getTimeHabitText = () => {
@@ -292,5 +304,11 @@ const getTopLocations = () => {
 const getRankEmoji = (index) => {
   const emojis = ['🥇', '🥈', '🥉', '✨', '🌟']
   return emojis[index]
+}
+
+// Toggle chart type
+const isBarChart = ref(false)
+const toggleChartType = () => {
+  isBarChart.value = !isBarChart.value
 }
 </script> 
