@@ -6,10 +6,6 @@
         百鲸大学食堂消费年度报告
       </h1>
       <p class="text-gray-600 mt-3 text-base">{{ formatDateRange() }}</p>
-      <div class="mt-4 inline-flex items-center gap-2 text-sm bg-blue-50/50 px-4 py-1.5 rounded-full border border-blue-100/50">
-        <span class="text-blue-500">📊</span>
-        <span class="text-gray-600 font-medium">{{ reportYear }}年度干饭数据盘点</span>
-      </div>
     </div>
 
     <!-- Key Metrics Grid - More visual impact -->
@@ -28,7 +24,7 @@
             <div class="flex items-center gap-1.5 mt-2">
               <span class="text-sm text-gray-500">≈</span>
               <span class="text-sm font-medium text-blue-700">
-                {{ Math.floor(reportData.summary.total_amount / 15) }}碗兰州拉面
+                {{ Math.floor(reportData.summary.total_amount / 15) }}碗拉面
               </span>
             </div>
           </div>
@@ -90,64 +86,71 @@
       </div>
     </div>
 
-    <!-- Analysis Section - Enhanced for sharing -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <!-- Time Distribution -->
-      <div class="bg-white rounded-2xl border border-gray-100/80 overflow-hidden">
-        <div class="p-5 border-b border-gray-100">
-          <div class="flex items-center justify-between">
-            <div>
-              <h3 class="text-lg font-bold text-gray-900">就餐时间分布</h3>
-              <p class="text-sm text-gray-500 mt-1">{{ getTimeHabitText() }}</p>
+    <!-- Analysis Grid -->
+    <div class="grid grid-cols-1 gap-4">
+      <!-- Time Distribution and Top Locations Row -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <!-- Time Distribution - Increased height -->
+        <div class="bg-white rounded-2xl border border-gray-100/80 overflow-hidden">
+          <div class="p-5 border-b border-gray-100">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                  <span>📊</span>就餐时间分布
+                </h3>
+                <p class="text-sm text-gray-500 mt-1">{{ getTimeHabitText() }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="p-4">
+            <div class="h-[340px]">
+              <EatingTimeHeatmap :transactions="reportData.transactions" />
             </div>
           </div>
         </div>
-        <div class="p-4">
-          <div class="h-[300px]">
-            <EatingTimeHeatmap :transactions="reportData.transactions" />
+        
+        <!-- Top Locations - More compact -->
+        <div class="bg-gradient-to-br from-white to-purple-50/30 rounded-2xl border border-purple-100/50 overflow-hidden">
+          <div class="p-4 border-b border-purple-100/50">
+            <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+              <span>🏆</span>年度打卡地标
+            </h3>
+          </div>
+          <div class="p-3">
+            <div class="grid grid-cols-1 gap-2">
+              <div v-for="(location, index) in getTopLocations()" :key="location.name" 
+                   class="flex items-center justify-between p-3 bg-white/50 rounded-xl border border-purple-100/30 hover:bg-white/80 transition-colors">
+                <div class="flex items-center gap-2 min-w-0">
+                  <span class="flex-shrink-0 text-lg">{{ getRankEmoji(index) }}</span>
+                  <div class="truncate">
+                    <div class="text-sm font-bold text-gray-900 truncate">{{ location.name }}</div>
+                    <div class="text-xs text-gray-500 mt-0.5">{{ location.visits }}次光顾</div>
+                  </div>
+                </div>
+                <div class="text-sm font-bold text-purple-700 ml-2">
+                  ¥{{ location.amount.toFixed(1) }}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      
-      <!-- Location Distribution -->
+
+      <!-- Location Distribution (Full Width) -->
       <div class="bg-white rounded-2xl border border-gray-100/80 overflow-hidden">
         <div class="p-5 border-b border-gray-100">
           <div class="flex items-center justify-between">
             <div>
-              <h3 class="text-lg font-bold text-gray-900">就餐地点分布</h3>
+              <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                <span>🗺️</span>就餐地点分布
+              </h3>
               <p class="text-sm text-gray-500 mt-1">{{ getLocationText() }}</p>
             </div>
           </div>
         </div>
         <div class="p-4">
-          <div class="h-[300px]">
+          <div class="h-[600px]">
             <LocationAnalysis :transactions="reportData.transactions" />
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Top Locations - Enhanced visual hierarchy -->
-    <div class="bg-gradient-to-br from-white to-purple-50/30 rounded-2xl border border-purple-100/50 overflow-hidden">
-      <div class="p-5 border-b border-purple-100/50">
-        <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
-          <span>🏆</span>年度打卡地标
-        </h3>
-      </div>
-      <div class="p-4">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          <div v-for="(location, index) in getTopLocations()" :key="location.name" 
-               class="flex items-center justify-between p-4 bg-white/50 rounded-xl border border-purple-100/30 hover:bg-white/80 transition-colors">
-            <div class="flex items-center gap-3 min-w-0">
-              <span class="flex-shrink-0 text-xl">{{ getRankEmoji(index) }}</span>
-              <div class="truncate">
-                <div class="text-base font-bold text-gray-900 truncate">{{ location.name }}</div>
-                <div class="text-sm text-gray-500 mt-0.5">{{ location.visits }}次光顾</div>
-              </div>
-            </div>
-            <div class="text-base font-bold text-purple-700 ml-3">
-              ¥{{ location.amount.toFixed(1) }}
-            </div>
           </div>
         </div>
       </div>

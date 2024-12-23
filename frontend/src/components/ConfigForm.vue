@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen flex items-center justify-center px-4">
-    <div class="max-w-md w-full space-y-6 bg-white p-6 sm:p-8 rounded-lg shadow-lg">
+    <div class="max-w-2xl w-full space-y-6 bg-white p-6 sm:p-8 rounded-2xl shadow-lg">
       <div>
         <h2 class="text-center text-3xl font-extrabold text-gray-900">
           百鲸大学食堂年度总结
@@ -10,25 +10,62 @@
         </p>
       </div>
       
+      <!-- Credentials Guide -->
+      <div class="bg-gradient-to-br from-white to-blue-50/30 rounded-xl border border-blue-100/50 p-5 space-y-4">
+        <div class="flex items-center gap-3">
+          <div class="p-2 bg-blue-100/50 rounded-lg">
+            <span class="text-xl">📝</span>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900">如何获取账号信息</h3>
+        </div>
+
+        <!-- Account Instructions -->
+        <div class="space-y-2">
+          <h4 class="font-medium text-gray-800 flex items-center gap-2">
+            <span class="text-sm">1️⃣</span> 获取账号
+          </h4>
+          <div class="text-sm text-gray-600 space-y-1 ml-6">
+            <p>1. 登录<a href="https://card.pku.edu.cn/user/user" target="_blank" class="text-blue-600 hover:text-blue-800 underline">校园卡网站</a></p>
+            <p>2. 点击"账户管理"</p>
+            <p>3. 在弹出的页面中找到并复制"账号"的值</p>
+          </div>
+        </div>
+
+        <!-- Hallticket Instructions -->
+        <div class="space-y-2">
+          <h4 class="font-medium text-gray-800 flex items-center gap-2">
+            <span class="text-sm">2️⃣</span> 获取 Hallticket
+          </h4>
+          <div class="text-sm text-gray-600 space-y-1 ml-6">
+            <p>1. 按 F12 打开开发者工具</p>
+            <p>2. 切换到 Network 标签页</p>
+            <p>3. 按 Ctrl+R 刷新页面</p>
+            <p>4. 找到 GetCardInfoByAccountNoParm 请求</p>
+            <p>5. 在 Cookies 选项卡中复制 hallticket 字段的值</p>
+          </div>
+        </div>
+      </div>
+
       <!-- Security Notice -->
-      <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <div class="flex">
-          <div class="flex-shrink-0">
-            <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+      <div class="bg-blue-50/70 border border-blue-100 rounded-xl p-4">
+        <div class="flex gap-3">
+          <div class="flex-shrink-0 text-blue-500">
+            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M10 2a8 8 0 018 8c0 3.098-1.76 5.777-4.324 7.106a.5.5 0 01-.676-.676C13.777 14.76 16 12.098 16 9a6 6 0 10-12 0c0 3.098 2.223 5.76 4.324 7.106a.5.5 0 01-.676.676A7.963 7.963 0 012 10a8 8 0 018-8z"/>
             </svg>
           </div>
-          <div class="ml-3">
-            <h3 class="text-sm font-medium text-blue-800">隐私说明</h3>
-            <div class="mt-2 text-xs text-blue-700 space-y-1">
-              <p>• 我们不会存储任何用户凭据</p>
-              <p>• 本项目完全开源，可以在 <a href="https://github.com/zhuohaoyu/PKU-Annual-Eat" target="_blank" class="font-medium underline">GitHub</a> 查看源码</p>
-              <p>• 如果担心安全问题，欢迎自行部署使用</p>
+          <div>
+            <div class="text-sm font-medium text-blue-900">数据安全说明</div>
+            <div class="mt-1 text-sm text-blue-700 space-y-1">
+              <p>• 仅处理数据用于生成报告，不会存储任何数据</p>
+              <p>• 全部源代码已开源于 <a href="https://github.com/zhuohaoyu/PKU-Annual-Eat" class="underline hover:text-blue-900 transition-colors">GitHub</a></p>
+              <p>• 如果担心安全问题，欢迎查看源码或自行部署使用</p>
             </div>
           </div>
         </div>
       </div>
       
+      <!-- Input Form -->
       <form class="space-y-6" @submit.prevent="submitForm">
         <div class="rounded-md space-y-4">
           <div>
@@ -38,8 +75,11 @@
               v-model="formData.account"
               type="text"
               required
-              class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder="请输入账号"
+              class="mt-1 block w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg 
+                     text-gray-900 placeholder-gray-400
+                     focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 
+                     transition-colors"
+              placeholder="输入账号"
             >
           </div>
           
@@ -50,59 +90,27 @@
               v-model="formData.hallticket"
               type="text"
               required
-              class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder="请输入hallticket"
+              class="mt-1 block w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg 
+                     text-gray-900 placeholder-gray-400
+                     focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 
+                     transition-colors"
+              placeholder="输入 hallticket"
             >
-          </div>
-
-          <div>
-            <label for="year" class="block text-sm font-medium text-gray-700">选择年份</label>
-            <select
-              id="year"
-              v-model="formData.year"
-              required
-              class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              <option v-for="year in availableYears" :key="year" :value="year">
-                {{ year }}年
-              </option>
-            </select>
           </div>
         </div>
 
-        <div>
-          <button
-            type="submit"
-            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            :disabled="loading"
-          >
-            <span v-if="loading" class="absolute left-0 inset-y-0 flex items-center pl-3">
-              <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-            </span>
-            {{ loading ? '生成中...' : '生成我的年度总结' }}
-          </button>
-        </div>
+        <button
+          type="submit"
+          :disabled="loading"
+          class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg
+                 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700
+                 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
+                 disabled:opacity-50 disabled:cursor-not-allowed
+                 transition-colors duration-200"
+        >
+          {{ loading ? '获取中...' : '生成年度报告' }}
+        </button>
       </form>
-
-      <!-- Instructions -->
-      <div class="bg-gray-50 rounded-lg p-4 text-sm text-gray-600">
-        <p class="font-medium text-gray-700 mb-2">如何获取账号和 Hallticket？</p>
-        <p class="mb-2 text-xs">详细教程请参考：<a href="https://github.com/KingRayCao/PKU-Annual-Eat#使用方法" target="_blank" class="text-indigo-600 hover:text-indigo-800 font-medium">使用教程</a></p>
-        <div class="space-y-2 text-xs">
-          <p class="font-medium text-gray-700">简要步骤：</p>
-          <ol class="list-decimal list-inside space-y-1">
-            <li>登录<a href="https://card.pku.edu.cn/user/user" target="_blank" class="text-indigo-600 hover:text-indigo-800 mx-1">校园卡网站</a></li>
-            <li>点击"账号管理"获取账号</li>
-            <li>按 F12 打开开发者工具，切换到 Network 标签页</li>
-            <li>刷新页面 (Ctrl+R)</li>
-            <li>找到 GetCardInfoByAccountNoParm 请求</li>
-            <li>在 Cookies 中找到 hallticket 的值</li>
-          </ol>
-        </div>
-      </div>
     </div>
   </div>
 </template>

@@ -1,5 +1,5 @@
 # Build stage for Vue frontend
-FROM dockerpull.org/library/node:18 AS frontend-build
+FROM hub.geekery.cn/library/node:18 AS frontend-build
 WORKDIR /app/frontend
 COPY frontend/package.json .
 RUN npm config set registry https://registry.npmmirror.com
@@ -12,7 +12,7 @@ COPY frontend/vite.config.js .
 RUN npm run build
 
 # Final stage
-FROM dockerpull.org/library/python:3.9-slim
+FROM hub.geekery.cn/library/python:3.9-slim
 WORKDIR /app
 # Setup backend
 COPY backend/requirements.txt .

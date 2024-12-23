@@ -131,7 +131,7 @@ const createVisualization = () => {
       bottom: '5%',
       itemWidth: 10,
       itemHeight: 80,
-      text: ['高', '低'],
+      text: ['高频', '低频'],
       textStyle: { 
         color: '#64748b',
         fontSize: 11

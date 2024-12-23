@@ -75,12 +75,6 @@
         </div>
         <div class="flex-1">
           <h4 class="text-lg font-bold text-gray-900">大手笔时刻</h4>
-          <div class="flex items-center gap-2 mt-1">
-            <span class="text-sm text-gray-500">最高的一笔消费是平均值的</span>
-            <span class="text-sm font-medium text-emerald-700">
-              {{ getMaxSpendingMultiple() }}倍
-            </span>
-          </div>
         </div>
       </div>
 
