@@ -1,0 +1,19 @@
+:80 {
+    # Enable logging
+    log {
+        format console
+        level DEBUG
+    }
+
+    # Serve static files
+    handle {
+        root * /app/frontend/dist
+        try_files {path} /index.html
+        file_server
+    }
+
+    # Proxy /api requests to the Flask backend
+    handle /api/* {
+        reverse_proxy localhost:5000
+    }
+} 

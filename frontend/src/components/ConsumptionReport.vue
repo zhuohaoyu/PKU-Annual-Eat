@@ -1,0 +1,204 @@
+<template>
+  <div class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+    <!-- Header -->
+    <div class="text-center">
+      <h1 class="text-3xl font-bold text-gray-900">百鲸大学食堂消费年度报告</h1>
+      <p class="text-gray-600 mt-2">{{ formatDateRange() }}</p>
+      <p class="text-sm text-gray-500 mt-4">又是一年"干饭人"生活报告</p>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
+      <div class="bg-white rounded-lg sm:rounded-xl p-2.5 sm:p-6 shadow-sm">
+        <div class="flex items-center gap-2">
+          <span class="text-lg sm:text-2xl">💰</span>
+          <div>
+            <p class="text-xs sm:text-sm text-gray-600">总消费</p>
+            <p class="text-base sm:text-2xl font-bold text-gray-900">¥{{ reportData.summary.total_amount.toFixed(1) }}</p>
+            <p class="text-[10px] sm:text-xs text-gray-500 mt-0.5">≈{{ Math.floor(reportData.summary.total_amount / 15) }}碗兰州拉面</p>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-lg sm:rounded-xl p-2.5 sm:p-6 shadow-sm">
+        <div class="flex items-center gap-2">
+          <span class="text-lg sm:text-2xl">🍽️</span>
+          <div>
+            <p class="text-xs sm:text-sm text-gray-600">打卡次数</p>
+            <p class="text-base sm:text-2xl font-bold text-gray-900">{{ reportData.summary.total_transactions }}</p>
+            <div class="flex flex-col text-[10px] sm:text-xs text-gray-500 mt-0.5 leading-tight">
+              <p>每天 {{ getAveragePerDay().toFixed(1) }}次消费, 均价 ¥{{ getAveragePerMeal().toFixed(1) }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-span-2 sm:col-span-1 bg-white rounded-lg sm:rounded-xl p-2.5 sm:p-6 shadow-sm">
+        <div class="flex items-center gap-2">
+          <span class="text-lg sm:text-2xl">📍</span>
+          <div>
+            <p class="text-xs sm:text-sm text-gray-600">探索窗口</p>
+            <p class="text-base sm:text-2xl font-bold text-gray-900">{{ reportData.summary.total_categories }}</p>
+            <p class="text-[10px] sm:text-xs text-gray-500 mt-0.5">{{ getExplorerText() }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Locations List -->
+    <div class="bg-white rounded-lg sm:rounded-xl p-3 sm:p-6 shadow-sm">
+      <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-4 flex items-center gap-2">
+        <span>🏆</span>消费排行榜
+      </h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
+        <div v-for="(location, index) in getTopLocations()" :key="location.name" 
+             class="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <span class="flex-shrink-0 text-sm">{{ getRankEmoji(index) }}</span>
+            <div class="truncate">
+              <div class="text-sm font-medium truncate">{{ location.name }}</div>
+              <div class="text-[10px] text-gray-500">{{ location.visits }}次光顾</div>
+            </div>
+          </div>
+          <div class="text-xs font-semibold text-gray-900 flex-shrink-0 ml-1">
+            ¥{{ location.amount.toFixed(1) }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analysis Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Time Distribution -->
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2">
+          <span>⏰</span>就餐时间分布
+        </h3>
+        <p class="text-sm text-gray-500 mb-4">{{ getTimeHabitText() }}</p>
+        <div class="h-[300px]">
+          <EatingTimeHeatmap :transactions="reportData.transactions" />
+        </div>
+      </div>
+      
+      <!-- Location Distribution -->
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2">
+          <span>🏪</span>就餐地点分布
+        </h3>
+        <p class="text-sm text-gray-500 mb-4">{{ getLocationText() }}</p>
+        <div class="h-[300px]">
+          <LocationAnalysis :transactions="reportData.transactions" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Unusual Transactions -->
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2">
+        <span>✨</span>难忘时刻
+      </h3>
+      <p class="text-sm text-gray-500 mb-4">这些时刻，值得被记住</p>
+      <UnusualTransactions 
+        :transactions="reportData.transactions"
+        :special-transactions="reportData.special_transactions" 
+      />
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center text-sm text-gray-500 pt-4">
+      <p>今年的故事写在这里，明年的精彩还在继续</p>
+      <p class="mt-2">Generated by PKU Dining Report</p>
+    </div>
+  </div>
+</template>
+
+<script>
+import EatingTimeHeatmap from './EatingTimeHeatmap.vue'
+import LocationAnalysis from './LocationAnalysis.vue'
+import UnusualTransactions from './UnusualTransactions.vue'
+
+export default {
+  components: {
+    EatingTimeHeatmap,
+    LocationAnalysis,
+    UnusualTransactions
+  },
+  props: {
+    reportData: {
+      type: Object,
+      required: true
+    }
+  },
+  methods: {
+    formatDateRange() {
+      const startDate = new Date(this.reportData.transactions[0].OCCTIME)
+      const endDate = new Date(this.reportData.transactions[this.reportData.transactions.length - 1].OCCTIME)
+      return `${startDate.getFullYear()}年${startDate.getMonth() + 1}月 - ${endDate.getFullYear()}年${endDate.getMonth() + 1}月`
+    },
+
+    getRankingText() {
+      const count = this.reportData.summary.total_transactions;
+      if (count > 800) return "前1%";
+      if (count > 600) return "前5%";
+      if (count > 400) return "前20%";
+      return "中等";
+    },
+
+    getExplorerText() {
+      const count = this.reportData.summary.total_categories;
+      if (count >= 20) return "食堂探索家🏆";
+      if (count >= 15) return "美食达人🌟";
+      if (count >= 10) return "初级探索者🎯";
+      return "还有待探索";
+    },
+
+    getTimeHabitText() {
+      // 这里可以根据实际数据分析得出用餐规律
+      return "你是个规律的食客，总能在最佳时段找到美食";
+    },
+
+    getLocationText() {
+      // 这里可以根据实际数据分析得出去地点
+      return "这里记录着你的每一次足迹，也许还有和朋友相聚的温暖时光";
+    },
+
+    getRankEmoji(index) {
+      const emojis = ['🏆', '🥈', '🥉', '✨', '🌟']
+      return emojis[index]
+    },
+
+    getTopLocations() {
+      const locationStats = {}
+      
+      this.reportData.transactions.forEach(trans => {
+        if (trans.TRANAMT >= 0) return
+        
+        const location = trans.MERCNAME.trim()
+        if (!locationStats[location]) {
+          locationStats[location] = {
+            name: location,
+            amount: 0,
+            visits: 0
+          }
+        }
+        locationStats[location].amount += Math.abs(parseFloat(trans.TRANAMT))
+        locationStats[location].visits++
+      })
+
+      return Object.values(locationStats)
+        .sort((a, b) => b.amount - a.amount)
+        .slice(0, 5)
+    },
+
+    getAveragePerMeal() {
+      const totalAmount = this.reportData.summary.total_amount;
+      const totalTransactions = this.reportData.summary.total_transactions;
+      return totalAmount / totalTransactions;
+    },
+
+    getAveragePerDay() {
+      const totalTransactions = this.reportData.summary.total_transactions;
+      const totalDays = 365;
+      return totalTransactions / totalDays;
+    }
+  }
+}
+</script> 
